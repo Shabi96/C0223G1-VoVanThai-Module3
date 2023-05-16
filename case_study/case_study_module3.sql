@@ -191,3 +191,34 @@ value(5, 2, 4),
 select *
 from nhan_vien 
 where ho_ten like 'H%' or ho_ten like 'T%' or ho_ten like 'K%' and (char_length(ho_ten) <= 15);
+
+select *
+from khach_hang
+where (datediff(now(), ngay_sinh) >= 18*365 and datediff(now(), ngay_sinh) <= 50*365) and (dia_chi like '%Đà Nẵng%' or dia_chi like '%Quảng Trị%');
+
+select kh.ma_khach_hang, kh.ho_ten, count(hd.ma_hop_dong) as "số lần đặt phòng"
+from khach_hang kh
+join hop_dong hd 
+on kh.ma_khach_hang = hd.ma_khach_hang
+join loai_khach lk
+on lk.ma_loai_khach = kh.ma_loai_khach
+where lk.ten_loai_khach = "Diamond"
+group by kh.ma_khach_hang
+order by count(hd.ma_hop_dong);
+
+select kh.ma_khach_hang, kh.ho_ten, lk.ten_loai_khach, hd.ma_hop_dong, 
+dv.ten_dich_vu, hd.ngay_lam_hop_dong, hd.ngay_ket_thuc,
+(dv.chi_phi_thue + ifnull(sum(hdct.so_luong * dvdk.gia), 0)) as total
+from khach_hang kh
+left join loai_khach lk 
+on kh.ma_loai_khach = lk.ma_loai_khach
+join hop_dong hd 
+on hd.ma_khach_hang = kh.ma_khach_hang
+left join dich_vu dv 
+on hd.ma_dich_vu = dv.ma_dich_vu
+left join hop_dong_chi_tiet hdct
+on hdct.ma_hop_dong = hd.ma_hop_dong
+left join dich_vu_di_kem dvdk 
+on dvdk.ma_dich_vu_di_kem = hdct.ma_dich_vu_di_kem
+group by kh.ma_khach_hang, hd.ma_hop_dong
+order by kh.ma_khach_hang;

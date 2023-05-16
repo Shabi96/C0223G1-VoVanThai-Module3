@@ -1,5 +1,6 @@
-create database change_erd;
-use change_erd;
+create database change_erd_to_entity_relationship_model;
+
+use change_erd_to_entity_relationship_model;
 
 create table nha_cung_cap(
 	ma_nha_cung_cap int primary key auto_increment,

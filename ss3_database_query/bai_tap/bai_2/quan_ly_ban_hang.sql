@@ -1,5 +1,6 @@
-create database quan_ly_ban_hang;
-use quan_ly_ban_hang;
+CREATE DATABASE quan_ly_ban_hang;
+
+USE quan_ly_ban_hang;
 
 CREATE TABLE customer (
     customer_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -33,25 +34,25 @@ CREATE TABLE order_detail (
         REFERENCES product (product_id)
 );
 
-insert into customer(customer_name, customer_age)
-value ("Minh Quan", 10),
+INSERT INTO customer(customer_name, customer_age)
+VALUE ("Minh Quan", 10),
 	  ("Ngoc Oanh", 20),
 	  ("Hong Ha", 50);
       
-insert into orders(customer_id, order_date)
-value (1, '2006-03-21'),
+INSERT INTO orders(customer_id, order_date)
+VALUE (1, '2006-03-21'),
 	  (2, '2006-03-23'),
 	  (1, '2006-03-16');
       
-insert into product(product_name, product_price)
-value ("May Giat", 3),
+INSERT INTO product(product_name, product_price)
+VALUE ("May Giat", 3),
 	  ("Tu Lanh", 5),
 	  ("Dieu Hoa", 7),
 	  ("Quat", 1),
 	  ("Bep Dien", 2);
       
-insert into order_detail(order_id, product_id, order_qty)
-value (1, 1, 3),
+INSERT INTO order_detail(order_id, product_id, order_qty)
+VALUE (1, 1, 3),
 	  (1, 3, 7),
 	  (1, 4, 2),
 	  (2, 1, 1),
@@ -59,27 +60,28 @@ value (1, 1, 3),
 	  (2, 5, 4),
 	  (2, 3, 3);
       
-select order_id, order_date, total_price
-from orders;
+SELECT order_id, order_date, total_price
+FROM orders;
 
-select c.customer_name, p.product_name, o.order_date
-from customer c
-join orders o
-on c.customer_id = o.customer_id
-join order_detail d
-on o.order_id = d.order_id
-join product p
-on d.product_id = p.product_id;
+SELECT c.customer_name, p.product_name, o.order_date
+FROM customer c
+JOIN orders o
+ON c.customer_id = o.customer_id
+JOIN order_detail d
+ON o.order_id = d.order_id
+JOIN product p
+ON d.product_id = p.product_id;
 
-select customer_name, c.customer_id
-from customer c
-left join orders o
-on c.customer_id = o.customer_id
-where o.customer_id is null;
+SELECT customer_name, c.customer_id
+FROM customer c
+LEFT JOIN orders o
+ON c.customer_id = o.customer_id
+WHERE o.customer_id IS NULL;
 
-select o.order_id, o.order_date,d.order_qty, p.product_price,d.order_qty * p.product_price as "total price"
-from orders o
-join order_detail d
-on d.order_id = o.order_id
-join product p
-on p.product_id = d.product_id
+SELECT o.order_id, o.order_date, SUM(d.order_qty * p.product_price) total
+FROM orders o
+JOIN order_detail d
+ON d.order_id = o.order_id
+JOIN product p
+ON p.product_id = d.product_id
+GROUP BY o.order_id;
