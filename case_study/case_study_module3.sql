@@ -83,7 +83,7 @@ ngay_ket_thuc datetime not null,
 tien_dat_coc double not null,
 ma_nhan_vien int not null,
 foreign key (ma_nhan_vien) references nhan_vien(ma_nhan_vien),
-ma_khach_hang int not null,
+ma_khach_hang int,
 foreign key (ma_khach_hang) references khach_hang(ma_khach_hang),
 ma_dich_vu int not null,
 foreign key (ma_dich_vu) references dich_vu(ma_dich_vu)
@@ -398,22 +398,26 @@ having count(hd.ma_nhan_vien) <= 3;
 
 -- 16.	Xóa những Nhân viên chưa từng lập được hợp đồng nào từ năm 2019 đến năm 2021.
 
-delete from nhan_vien
-where ma_nhan_vien not in (
-select * 
-from (select hd.ma_nhan_vien
-	from hop_dong hd
-	join nhan_vien nv
-	on hd.ma_nhan_vien = nv.ma_nhan_vien
-	group by ma_nhan_vien) as tb
-);
+set sql_safe_updates = 0;
 
+alter table nhan_vien
+add is_delete tinyint(1) default "1";
+
+update nhan_vien
+set is_delete = 0
+where ma_nhan_vien not in (
+	select hd.ma_nhan_vien
+	from hop_dong hd
+    where year(hd.ngay_lam_hop_dong) between 2019 and 2021
+);
+set sql_safe_updates = 1;
 -- 17.	Cập nhật thông tin những khách hàng có ten_loai_khach từ Platinum lên Diamond,
 --  chỉ cập nhật những khách hàng đã từng đặt phòng với Tổng Tiền thanh toán trong năm 2021 là lớn hơn 10.000.000 VNĐ.
+set sql_safe_updates = 0;
 
 create view thanh_toan_view(ma_loai_khach, total) as
 select lk.ma_loai_khach,
-ifnull(dv.chi_phi_thue + ifnull(sum(hdct.so_luong * dvdk.gia), 0), 0) as total
+sum(ifnull(dv.chi_phi_thue + ifnull(hdct.so_luong * dvdk.gia, 0), 0)) as total
 from khach_hang kh
 join loai_khach lk 
 on kh.ma_loai_khach = lk.ma_loai_khach
@@ -425,7 +429,8 @@ left join hop_dong_chi_tiet hdct
 on hdct.ma_hop_dong = hd.ma_hop_dong
 left join dich_vu_di_kem dvdk 
 on dvdk.ma_dich_vu_di_kem = hdct.ma_dich_vu_di_kem
-group by kh.ma_khach_hang, hd.ma_hop_dong
+where year(hd.ngay_lam_hop_dong) = 2021
+group by kh.ma_loai_khach, hd.ma_hop_dong
 order by kh.ma_khach_hang;
 
 update khach_hang
@@ -440,30 +445,35 @@ select * from (
     join hop_dong hd
     on hd.ma_khach_hang = kh.ma_khach_hang
     where lk.ten_loai_khach = "Platinum" and 
-    lk.ma_loai_khach in (
-    select ma_loai_khach
-	from thanh_toan_view
-    where total > 10000000
-    )
+		lk.ma_loai_khach in (
+		select ma_loai_khach
+		from thanh_toan_view
+		where total > 10000000)
     ) as tb
 );
-
+set sql_safe_updates = 1;
 -- 18.	Xóa những khách hàng có hợp đồng trước năm 2021 (chú ý ràng buộc giữa các bảng).
--- select * 
--- from khach_hang;
+set sql_safe_updates = 0;
 
--- set sql_safe_updates = 0;
--- create view khach_hang_hop_dong_view(ma_khach_hang) as
--- select kh.ma_khach_hang
--- 	from khach_hang kh
--- 	join hop_dong hd
--- 	on kh.ma_khach_hang = hd.ma_khach_hang
---     join hop_dong_chi_tiet hdct
---     on hd.ma_hop_dong = hdct.ma_hop_dong
---     join dich_vu_di_kem dvdk
---     on hdct.ma_dich_vu_di_kem = dvdk.ma_dich_vu_di_kem;
--- drop view khach_hang_hop_dong_view;
+alter table khach_hang
+add is_delete tinyint(1) default "1";
 
+update khach_hang
+set is_delete = 0
+where ma_khach_hang in (
+	select hd.ma_khach_hang
+	from hop_dong hd
+	where year(ngay_lam_hop_dong) < 2021
+);
+
+set sql_safe_updates = 1;
+
+select *
+from khach_hang
+where is_delete = 0;
+
+-- CÁCH HƠI LẦYYYY
+-- set foreign_key_checks = 0;
 -- delete from khach_hang
 -- where ma_khach_hang in (
 -- select * from (
@@ -471,11 +481,13 @@ select * from (
 -- 	from khach_hang kh
 -- 	join hop_dong hd
 -- 	on kh.ma_khach_hang = hd.ma_khach_hang
--- 	where year(hd.ngay_lam_hop_dong) = 2021
+-- 	where year(hd.ngay_lam_hop_dong) = 2020
 --     ) as tb
 -- );
+-- set foreign_key_checks = 1;
 
 -- 19.	Cập nhật giá cho các dịch vụ đi kèm được sử dụng trên 10 lần trong năm 2020 lên gấp đôi.
+set sql_safe_updates = 0;
 
 update dich_vu_di_kem
 set gia = gia * 2
@@ -487,14 +499,112 @@ select * from (
 	on hdct.ma_dich_vu_di_kem = dvdk.ma_dich_vu_di_kem
 	join hop_dong hd
 	on hd.ma_hop_dong = hdct.ma_hop_dong
-	where hdct.so_luong > 10 and year(ngay_lam_hop_dong) = 2020) as tb);
-    
+	where hdct.so_luong > 10 and year(ngay_lam_hop_dong) = 2020) as tb
+);
 
+set sql_safe_updates = 1;
 -- 20.	Hiển thị thông tin của tất cả các nhân viên và khách hàng có trong hệ thống,
 --  thông tin hiển thị bao gồm id (ma_nhan_vien, ma_khach_hang), ho_ten, email, so_dien_thoai, ngay_sinh, dia_chi.
 
 select nv.ma_nhan_vien id , nv.ho_ten, nv.email, nv.so_dien_thoai, nv.ngay_sinh, nv.dia_chi
 from nhan_vien nv
-union
+union all
 select kh.ma_khach_hang, kh.ho_ten, kh.email, kh.so_dien_thoai, kh.ngay_sinh, kh.dia_chi
-from khach_hang kh
+from khach_hang kh;
+
+-- 23.	Tạo Stored Procedure sp_xoa_khach_hang dùng để xóa thông tin của một khách hàng nào đó 
+-- với ma_khach_hang được truyền vào như là 1 tham số của sp_xoa_khach_hang.
+
+delimiter //
+create procedure xoa_khach_hang(ma_khach_hang_xoa int)
+begin
+	update khach_hang
+    set is_delete = 0
+    where ma_khach_hang = ma_khach_hang_xoa;
+end
+// delimiter ;
+
+-- 24.	Tạo Stored Procedure sp_them_moi_hop_dong dùng để thêm mới vào bảng hop_dong 
+-- với yêu cầu sp_them_moi_hop_dong phải thực hiện kiểm tra tính hợp lệ của dữ liệu bổ sung, 
+-- với nguyên tắc không được trùng khóa chính và đảm bảo toàn vẹn tham chiếu đến các bảng liên quan.  
+
+delimiter //
+create procedure sp_them_moi_hop_dong (hd_id int, hd_ngay_lam_hop_dong datetime, hd_ngay_ket_thuc datetime,
+									   hd_tien_dat_coc double, hd_ma_nhan_vien int, hd_ma_khach_hang int, hd_ma_dich_vu int)
+begin
+declare id int default 0;
+declare ma_nv int default 1;
+declare ma_kh int default 1;
+declare ma_dv int default 1;
+if hd_id in (select ma_hop_dong from hop_dong) then 
+	set id = 1;
+	signal sqlstate '45000'
+	set message_text = 'Mã hợp đồng này đã tồn tại';
+end if;   
+if hd_ma_nhan_vien not in (select ma_nhan_vien from nhan_vien where is_delete = 1) then 
+    set ma_nv = 0;
+	signal sqlstate '45000'
+	set message_text = 'Mã nhân viên này không tồn tại';
+end if;
+if hd_ma_khach_hang not in (select ma_khach_hang from khach_hang where is_delete = 1) then
+	set ma_kh = 0;
+	signal sqlstate '45000'
+	set message_text = 'Mã khách hàng này không tồn tại';
+end if;    
+if hd_ma_dich_vu not in (select ma_dich_vu from dich_vu) then
+	set ma_dv = 0;
+	signal sqlstate '45000'
+	set message_text = 'Mã dịch vụ này không tồn tại';
+end if;    
+insert into hop_dong (ma_hop_dong, ngay_lam_hop_dong, ngay_ket_thuc, tien_dat_coc, ma_nhan_vien, ma_khach_hang, ma_dich_vu)
+value (hd_id, hd_ngay_lam_hop_dong, hd_ngay_ket_thuc, hd_tien_dat_coc, hd_ma_nhan_vien, hd_ma_khach_hang, hd_ma_dich_vu);
+end //
+delimiter ;  
+
+call sp_them_moi_hop_dong (16, "2021-12-12", "2021-12-20", 20000, 9, 99, 1);
+
+-- 25.	Tạo Trigger có tên tr_xoa_hop_dong khi xóa bản ghi trong bảng hop_dong thì hiển thị tổng số lượng bản ghi còn lại
+--  có trong bảng hop_dong ra giao diện console của database.
+alter table hop_dong
+add is_delete tinyint(1) default 1;
+
+create table delete_history(tong_so_luong_ban_ghi_con_lai int);
+
+delimiter //
+create trigger tr_xoa_hop_dong
+after delete on hop_dong
+for each row
+begin
+declare tong_so_luong int;
+(select count(is_delete) from hop_dong where is_delete = 1) into tong_so_luong;
+insert into delete_history(tong_so_luong_ban_ghi_con_lai)
+value (tong_so_luong);
+end //
+delimiter ;
+
+-- 26.	Tạo Trigger có tên tr_cap_nhat_hop_dong khi cập nhật ngày kết thúc hợp đồng,
+--  cần kiểm tra xem thời gian cập nhật có phù hợp hay không, với quy tắc sau: 
+--  Ngày kết thúc hợp đồng phải lớn hơn ngày làm hợp đồng ít nhất là 2 ngày. 
+--  Nếu dữ liệu hợp lệ thì cho phép cập nhật, nếu dữ liệu không hợp lệ thì in ra thông báo 
+--  “Ngày kết thúc hợp đồng phải lớn hơn ngày làm hợp đồng ít nhất là 2 ngày” trên console của database.
+
+-- delimiter //
+-- create trigger tr_cap_nhap_hop_dong
+-- after update on hop_dong
+-- for each row
+-- begin
+-- declare so_ngay int;
+-- set so_ngay = (select day(ngay_ket_thuc) - day(ngay_lam_hop_dong) from hop_dong);
+-- if so_ngay < 2 then 
+-- signal sqlstate '45000'
+-- set message_text = 'Ngày kết thúc hợp đồng phải lớn hơn ngày làm hợp đồng ít nhất 2 ngày';
+-- end if;
+-- end //
+-- delimiter ;
+-- drop trigger tr_cap_nhap_hop_dong;
+
+-- set sql_safe_updates = 0;
+
+-- update hop_dong
+-- set ngay_ket_thuc = '20201214'
+-- where ma_hop_dong = 1;
