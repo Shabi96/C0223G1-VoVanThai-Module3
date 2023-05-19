@@ -530,7 +530,7 @@ end
 
 delimiter //
 create procedure sp_them_moi_hop_dong (hd_id int, hd_ngay_lam_hop_dong datetime, hd_ngay_ket_thuc datetime,
-									   hd_tien_dat_coc double, hd_ma_nhan_vien int, hd_ma_khach_hang int, hd_ma_bo_phan int)
+									   hd_tien_dat_coc double, hd_ma_nhan_vien int, hd_ma_khach_hang int, hd_ma_dich_vu int)
 begin
 if hd_id in (select ma_hop_dong from hop_dong) then 
 	signal sqlstate '45000'
@@ -544,16 +544,15 @@ if hd_ma_khach_hang not in (select ma_khach_hang from khach_hang where is_delete
 	signal sqlstate '45000'
 	set message_text = 'Mã khách hàng này không tồn tại';
 end if;    
-if hd_bo_phan not in (select ma_bo_phan from bo_phan) then
+if hd_ma_dich_vu not in (select ma_dich_vu from dich_vu) then
 	signal sqlstate '45000'
 	set message_text = 'Mã dịch vụ này không tồn tại';
 end if;    
-insert into hop_dong (ma_hop_dong, ngay_lam_hop_dong, ngay_ket_thuc, tien_dat_coc, ma_nhan_vien, ma_khach_hang, ma_bo_phan)
-value (hd_id, hd_ngay_lam_hop_dong, hd_ngay_ket_thuc, hd_tien_dat_coc, hd_ma_nhan_vien, hd_ma_khach_hang, hd_ma_bo_phan);
+insert into hop_dong (ma_hop_dong, ngay_lam_hop_dong, ngay_ket_thuc, tien_dat_coc, ma_nhan_vien, ma_khach_hang, ma_dich_vu)
+value (hd_id, hd_ngay_lam_hop_dong, hd_ngay_ket_thuc, hd_tien_dat_coc, hd_ma_nhan_vien, hd_ma_khach_hang, hd_ma_dich_vu);
 end //
 delimiter ;  
 
-drop procedure sp_them_moi_hop_dong;
 call sp_them_moi_hop_dong (16, "2021-12-12", "2021-12-20", 20000, 2, 99, 1);
 
 -- 25.	Tạo Trigger có tên tr_xoa_hop_dong khi xóa bản ghi trong bảng hop_dong thì hiển thị tổng số lượng bản ghi còn lại
@@ -581,20 +580,20 @@ delimiter ;
 --  Nếu dữ liệu hợp lệ thì cho phép cập nhật, nếu dữ liệu không hợp lệ thì in ra thông báo 
 --  “Ngày kết thúc hợp đồng phải lớn hơn ngày làm hợp đồng ít nhất là 2 ngày” trên console của database.
 
-delimiter //
-create trigger tr_cap_nhap_hop_dong
-after update on hop_dong
-for each row
-begin
-declare so_ngay int;
-set so_ngay = (select day(ngay_ket_thuc) - day(ngay_lam_hop_dong) from hop_dong);
-if so_ngay < 2 then 
-signal sqlstate '45000'
-set message_text = 'Ngày kết thúc hợp đồng phải lớn hơn ngày làm hợp đồng ít nhất 2 ngày';
-end if;
-end //
-delimiter ;
-drop trigger tr_cap_nhap_hop_dong;
+-- delimiter //
+-- create trigger tr_cap_nhap_hop_dong
+-- after update on hop_dong
+-- for each row
+-- begin
+-- declare so_ngay int;
+-- set so_ngay = (select day(ngay_ket_thuc) - day(ngay_lam_hop_dong) from hop_dong);
+-- if so_ngay < 2 then 
+-- signal sqlstate '45000'
+-- set message_text = 'Ngày kết thúc hợp đồng phải lớn hơn ngày làm hợp đồng ít nhất 2 ngày';
+-- end if;
+-- end //
+-- delimiter ;
+-- drop trigger tr_cap_nhap_hop_dong;
 
 -- set sql_safe_updates = 0;
 
