@@ -7,11 +7,13 @@
     padding: 15px;
     width: 100%;
 }
+
 .row::after {
     content: "";
     clear: both;
     display: table;
 }
+
 html {
     font-family: "Lucida Sans", sans-serif;
 }
@@ -31,6 +33,7 @@ html {
     .col-m-11 {width: 91.66%;}
     .col-m-12 {width: 100%;}
 }
+
 @media only screen and (min-width: 768px) {
     /* For desktop: */
     .col-1 {width: 8.33%;}
@@ -69,6 +72,7 @@ html {
 .col-3 {
     text-align: center;
 }
+
 .ads {
     border: 1px solid black;
     height: 70px;

@@ -12,6 +12,7 @@
     clear: both;
     display: table;
 }
+
 html {
     font-family: "Lucida Sans", sans-serif;
 }
@@ -31,6 +32,7 @@ html {
     .col-m-11 {width: 91.66%;}
     .col-m-12 {width: 100%;}
 }
+
 @media only screen and (min-width: 768px) {
     /* For desktop: */
     .col-1 {width: 8.33%;}
