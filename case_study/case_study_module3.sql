@@ -553,7 +553,7 @@ value (hd_id, hd_ngay_lam_hop_dong, hd_ngay_ket_thuc, hd_tien_dat_coc, hd_ma_nha
 end //
 delimiter ;  
 
-call sp_them_moi_hop_dong (16, "2021-12-12", "2021-12-20", 20000, 2, 99, 1);
+-- call sp_them_moi_hop_dong (16, "2021-12-12", "2021-12-20", 20000, 2, 99, 1);
 
 -- 25.	Tạo Trigger có tên tr_xoa_hop_dong khi xóa bản ghi trong bảng hop_dong thì hiển thị tổng số lượng bản ghi còn lại
 --  có trong bảng hop_dong ra giao diện console của database.
@@ -564,7 +564,7 @@ create table delete_history(tong_so_luong_ban_ghi_con_lai int);
 
 delimiter //
 create trigger tr_xoa_hop_dong
-after delete on hop_dong
+after update on hop_dong
 for each row
 begin
 declare tong_so_luong int;
@@ -599,4 +599,62 @@ delimiter ;
 
 -- update hop_dong
 -- set ngay_ket_thuc = '20201214'
--- where ma_hop_dong = 1;
+-- where ma_hop_dong in (select ma_hop_dong from hop_dong);
+
+-- 27.	Tạo Function thực hiện yêu cầu sau:
+-- a.	Tạo Function func_dem_dich_vu: Đếm các dịch vụ đã được sử dụng với tổng tiền là > 2.000.000 VNĐ.
+
+delimiter //
+create function func_dem_dich_vu()
+returns int
+deterministic
+begin
+	declare result int;
+    select count(*) from
+    (select hd.ma_dich_vu
+	from dich_vu dv
+	join hop_dong hd
+	on hd.ma_dich_vu = dv.ma_dich_vu
+	left join hop_dong_chi_tiet hdct
+	on hdct.ma_hop_dong = hd.ma_hop_dong
+	left join dich_vu_di_kem dvdk 
+	on dvdk.ma_dich_vu_di_kem = hdct.ma_dich_vu_di_kem
+	group by hd.ma_dich_vu
+	having sum(ifnull(dv.chi_phi_thue + ifnull(hdct.so_luong * dvdk.gia, 0), 0)) > 2000000) as tb into result;
+    return result;
+end //    
+delimiter ;
+select func_dem_dich_vu();
+
+-- b.	Tạo Function func_tinh_thoi_gian_hop_dong: 
+-- Tính khoảng thời gian dài nhất tính từ lúc bắt đầu làm hợp đồng đến lúc kết thúc hợp đồng mà khách hàng đã thực hiện thuê dịch vụ
+--  (lưu ý chỉ xét các khoảng thời gian dựa vào từng lần làm hợp đồng thuê dịch vụ, không xét trên toàn bộ các lần làm hợp đồng). 
+--  Mã của khách hàng được truyền vào như là 1 tham số của function này.
+
+delimiter //
+create function func_tinh_thoi_gian_hop_dong(f_ma_khach_hang int)
+returns int
+deterministic
+begin
+	declare result int;
+    set result = (
+    select day(hd.ngay_ket_thuc) - day(hd.ngay_lam_hop_dong) as thoi_gian_dai_nhat
+    from khach_hang kh
+    join hop_dong hd
+    on kh.ma_khach_hang = hd.ma_khach_hang
+    join dich_vu dv
+	on dv.ma_dich_vu = hd.ma_dich_vu
+    where kh.ma_khach_hang = f_ma_khach_hang
+	order by day (hd.ngay_ket_thuc) - day(hd.ngay_lam_hop_dong) desc
+    limit 1);
+    return result;
+end //    
+delimiter ;
+
+select func_tinh_thoi_gian_hop_dong(5);
+
+-- 28.	Tạo Stored Procedure sp_xoa_dich_vu_va_hd_room để tìm các dịch vụ được thuê bởi khách hàng
+--  với loại dịch vụ là “Room” từ đầu năm 2015 đến hết năm 2019 để xóa thông tin của các dịch vụ đó 
+--  (tức là xóa các bảng ghi trong bảng dich_vu) và xóa những hop_dong sử dụng dịch vụ liên quan
+--  (tức là phải xóa những bản gi trong bảng hop_dong) và những bản liên quan khác.
+
