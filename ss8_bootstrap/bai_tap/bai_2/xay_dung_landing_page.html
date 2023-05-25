@@ -6,6 +6,21 @@
     <style>
         .black a {
             color: black;
+            font-size: 12px;
+            font-family: "Book Antiqua";
+        }
+        .icon {
+            font-size: 25px;
+            position: relative;
+            left: 200px;
+            color: #3076b7;
+        }
+        .icon2 {
+            font-size: 22px;
+        }
+        .foot a {
+            color: black;
+            font-size: 10px;
         }
     </style>
     <link rel="stylesheet" href="../../../bootstrap-5.1.3-dist/css/bootstrap.css">
@@ -110,22 +125,20 @@
                 <div class="row">
                     <div class="col-1"></div>
                     <div class="col-10">
-                        <div class="row" >
+                        <div class="row" style="padding-top: 200px">
                             <h1>Laptops designed by Microsoft</h1>
                         </div>
                         <div class="row">
-                        <div>Surface computers and adaptive accessories are designed with
+                        <div style="padding-top: 10px">Surface computers and adaptive accessories are designed with
                             the disability community to empower everyone to achieve more.</div>
                         </div>
+                        <div class="row" style="padding: 20px;">
+                            <div class="col-6"><a href="#">Shop tablets ></a></div>
+                            <div class="col-6"><a href="#">Shop laptops ></a></div>
+                        </div>
                         <div class="row">
-                            <span>
-                                 <a href="#">Shop tablets ></a>
-                                <a href="#">Shop laptops ></a>
-                            </span>
-                            <span>
-                                <a href="#">About accessibility></a>
-                                <a href="#">Watch video ></a>
-                            </span>
+                            <div class="col-6"><a href="#"  style="padding-left: 20px"  >About accessibility></a></div>
+                            <div class="col-6"><a href="#">Watch video ></a></div>
                         </div>
                     </div>
                     <div class="col-1"></div>
@@ -136,14 +149,15 @@
             </div>
         </div>
 <!--    row4-->
-    <div class="row">
-        <div class="col-2"><ion-icon name="laptop-outline"></ion-icon><a href="#">Compare devices ></a>
-        </div>
-        <div class="col-2"><ion-icon name="help-circle-outline"></ion-icon><a href="#">Help me choose</a></div>
-        <div class="col-2"><ion-icon name="telescope-outline"></ion-icon><a href="#">Surface deals</a></div>
-        <div class="col-2"><ion-icon name="arrow-redo-circle-outline"></ion-icon><a href="#">Why Surface</a></div>
-        <div class="col-2"><ion-icon name="information-circle-outline"></ion-icon><a href="#">Surface for education</a></div>
-        <div class="col-2"><ion-icon name="business-outline"></ion-icon><a href="#">Surface for Business</a></div>
+    <div class="row" style="margin-top: 30px; margin-bottom: 10px">
+        <div class="col-3 icon"><i class="fa-solid fa-laptop"></i><a href="#">Compare devices ></a></div>
+        <div class="col-3 icon" ><i class="fa-regular fa-circle-question"></i><a href="#">Help me choose</a></div>
+        <div class="col-3 icon"><i class="fa-solid fa-ear-deaf"></i><a href="#">Surface deals</a></div>
+    </div>
+    <div class="row" style="margin-bottom: 30px">
+        <div class="col-3 icon"><i class="fa-solid fa-hand-holding-droplet"></i><a href="#">Why Surface</a></div>
+        <div class="col-3 icon"><i class="fa-solid fa-user-graduate"></i><a href="#">Surface for education</a></div>
+        <div class="col-3 icon"><i class="fa-solid fa-city"></i><a href="#">Surface for Business</a></div>
     </div>
 <!--    row5-->
     <div class="row">
@@ -152,7 +166,7 @@
 <!--    row6-->
     <div class="row">
         <div class="col-2"><h3>2-in-1 PCs</h3></div>
-        <div class="col-2"><a href="#">See all Surface 2-in-1 PCs</a></div>
+        <div class="col-4 d-flex justify-content-center align-items-center"><a href="#" style="font-size: 20px; font-weight: bold">See all Surface 2-in-1 PCs</a></div>
     </div>
 <!--    row7-->
     <div class="row">
@@ -202,7 +216,7 @@
             </div>
             <div class="row">
                 <div class="col-6">
-                    <div class="card" style="width: 100%;">
+                    <div class="card" style="width: 100%; margin-top: 15px;">
                         <img src="https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/MSFT-Surface-Pro-7-plues-three-quarter-view-kickstand-extended-type-cover?fmt=png-alpha&wid=325&hei=240&fit=crop" class="card-img-top" alt="...">
                         <div class="card-body d-flex justify-content-center">
                             <div>
@@ -220,7 +234,7 @@
                     </div>
                 </div>
                 <div class="col-6">
-                    <div class="card" style="width: 100%">
+                    <div class="card" style="width: 100%; margin-top: 15px">
                         <img src="https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/MSFT-Surface-Go-3--three-quarter-kickstand-extended-type-cover?fmt=png-alpha&wid=325&hei=240&fit=crop" class="card-img-top" alt="...">
                         <div class="card-body d-flex justify-content-center">
                             <div>
@@ -245,8 +259,8 @@
         <div class="col-2">
             <h2>Laptops</h2>
         </div>
-        <div class="col-3">
-            <a href="#">Explore all Surface Laptops ></a>
+        <div class="col-4 d-flex justify-content-center align-items-center">
+            <a href="#" style="font-size: 20px;font-weight: bold">Explore all Surface Laptops ></a>
         </div>
     </div>
 <!--    row9-->
@@ -292,7 +306,7 @@
             </div>
             <div class="row">
                 <div class="col-6">
-                    <div class="card" style="width: 100%;">
+                    <div class="card" style="width: 100%;margin-top: 15px">
                         <img src="https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/MSFT-Surface_Laptop-Studio_Home_DeviceShowcase_Poster?fmt=png-alpha&wid=325&hei=240&fit=crop" class="card-img-top" alt="...">
                         <div class="card-body d-flex justify-content-center">
                             <div>
@@ -310,7 +324,7 @@
                     </div>
                 </div>
                 <div class="col-6">
-                    <div class="card" style="width: 100%">
+                    <div class="card" style="width: 100%;margin-top: 15px">
                         <img src="https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/MSFT-Surface_Laptop-Go-2_Home_DeviceShowcase_Poster?fmt=png-alpha&wid=325&hei=240&fit=crop" class="card-img-top" alt="...">
                         <div class="card-body d-flex justify-content-center">
                             <div>
@@ -429,8 +443,9 @@
     </div>
 <!--    row12-->
     <div class="row" style="background-color: #bbdef1">
-        <div class="col-8">
-            <div><h2>Introducing Windows 11 Phone Link for Surface</h2></div>
+        <div class="col-1"></div>
+        <div class="col-7">
+            <div style="padding-top: 40px"><h2>Introducing Windows 11 Phone Link for Surface</h2></div>
             <div><p>Experience the best of Windows 11 and stay connected on your Surface with Windows Phone Link - available on Android and iOS.1</p></div>
             <a href="#">Get started now ></a>
         </div>
@@ -456,40 +471,41 @@
         </div>
     </div>
 <!--    row15-->
-    <div class="row">
-        <div class="col-3">
+    <div class="row" style="margin-top: 15px">
+        <div class="col-3 icon2">
             <i class="fa-solid fa-laptop-code"></i>
             <a href="">Protect your Surface</a>
         </div>
-        <div class="col-3">
+        <div class="col-3 icon2">
             <i class="fa-solid fa-building"></i>
             <a href="">Surface for your business</a>
         </div>
-        <div class="col-3">
+        <div class="col-3 icon2">
             <i class="fa-solid fa-keyboard"></i>
             <a href="">Accessories</a>
         </div>
-        <div class="col-3">
+        <div class="col-3 icon2">
             <i class="fa-solid fa-headset"></i>
             <a href="">Surface Support</a>
         </div>
     </div>
-    <div class="row">
-        <div class="col-4">
+    <div class="row" style="position: relative; left: 50px; margin-top: 10px; margin-bottom: 15px">
+        <div class="col-4 icon2">
             <i class="fa-solid fa-earth-asia"></i>
             <a href="">Register your Surface</a>
         </div>
-        <div class="col-4">
+        <div class="col-4 icon2">
             <i class="fa-solid fa-rectangle-list"></i>
             <a href="">Get the Surface Newsletter</a>
         </div>
-        <div class="col-4">
+        <div class="col-4 icon2">
             <i class="fa-solid fa-triangle-exclamation"></i>
             <a href="">Power cord recall</a>
         </div>
     </div>
     <div class="row" style="background-color: black; color: white">
-        <p>Some software, accessories, and devices sold separately.
+        <div>Some software, accessories, and devices sold separately.</div>
+        <div style="padding-top: 20px">
             [1] Phone Link for iOS requires iPhone® with iOS 14 or higher,
             Windows 11 device, Bluetooth connection and the latest version of the Phone Link app.
             Not available for iPad® (iPadOS®) or MacOS®. To experience the full functionality on Android™ devices,
@@ -497,21 +513,26 @@
               Microsoft Phone Link and PC both need a Wi-Fi connection,
             otherwise data restrictions may apply. Device compatibility may vary.
             Regional restrictions may apply. Trademarks are the property of their respective owners.
-            <a href="#">See full list of compatible devices by clicking here</a></p>
+            <a href="#">See full list of compatible devices by clicking here</a>
+        </div>
     </div>
     <div class="row">
         <div class="col-6 d-flex justify-content-center" >
-            <p>Follow this page </p>
-            <i class="fa-brands fa-facebook-f"></i>
-            <i class="fa-brands fa-twitter"></i>
-            <i class="fa-brands fa-instagram"></i>
-            <i class="fa-brands fa-invision"></i>
+            <div style="padding: 20px;"> <h5>Follow this page</h5></div>
+            <div style="padding: 20px;">
+                <i class="fa-brands fa-facebook-f"></i>
+                <i class="fa-brands fa-twitter"></i>
+                <i class="fa-brands fa-instagram"></i>
+                <i class="fa-brands fa-invision"></i>
+            </div>
         </div>
         <div class="col-6 d-flex justify-content-center" >
-            <p>Share this page </p>
-            <i class="fa-brands fa-facebook-f"></i>
-            <i class="fa-brands fa-twitter"></i>
-            <i class="fa-brands fa-invision"></i>
+            <div style="padding: 20px;"><h5>Share this page </h5></div>
+            <div style="padding: 20px;">
+                <i class="fa-brands fa-facebook-f"></i>
+                <i class="fa-brands fa-twitter"></i>
+                <i class="fa-brands fa-invision"></i>
+            </div>
         </div>
     </div>
     <div class="row black" style="background-color: #f2f2f2">
@@ -583,12 +604,20 @@
         </div>
 
     </div>
-    <div class="row">
-        <div class="col-2"></div>
-        <div class="col-2"></div>
+    <div class="row" style="background-color: #f2f2f2;">
+        <div class="col-2 foot"><a href="#">English (United States)</a></div>
+        <div class="col-2 foot"><a href="#">Your Privacy Choices</a></div>
         <div class="col-8">
             <div class="row">
-                <div class="col-1"></div>
+                <div class="col-1 foot"><a href="#">Site Map</a></div>
+                <div class="col-2 foot"><a href="#">Contact Microsoft</a></div>
+                <div class="col-1 foot"><a href="#">Privacy</a></div>
+                <div class="col-1 foot"><a href="#">Terms of use</a></div>
+                <div class="col-1 foot"><a href="#">Trademarks</a></div>
+                <div class="col-1 foot"><a href="#">Safety&eco</a></div>
+                <div class="col-1 foot"><a href="#">Recycling</a></div>
+                <div class="col-2 foot"><a href="#">About our ads</a></div>
+                <div class="col-2 foot"><a href="#">Microsoft 2023</a></div>
             </div>
         </div>
     </div>
