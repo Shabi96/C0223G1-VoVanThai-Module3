@@ -22,7 +22,7 @@ public class ProductDiscountCalculatorServlet extends HttpServlet {
         double total = listPrice - discountAmount;
         request.setAttribute("result", discountAmount);
         request.setAttribute("total", total);
-        RequestDispatcher r = request.getRequestDispatcher("/calculator.jsp");
-        r.forward(request, response);
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/calculator.jsp");
+        requestDispatcher.forward(request, response);
     }
 }
