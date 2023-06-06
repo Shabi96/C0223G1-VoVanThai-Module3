@@ -39,7 +39,7 @@ public class UserServlet extends HttpServlet {
         String search = request.getParameter("name");
         List<User> userList = userService.findByName(search);
         request.setAttribute("userList", userList);
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/list.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/view/list.jsp");
         try {
             requestDispatcher.forward(request, response);
         } catch (ServletException e) {
@@ -52,7 +52,7 @@ public class UserServlet extends HttpServlet {
     private void showFormEdit(HttpServletRequest request, HttpServletResponse response) {
         int id = Integer.parseInt(request.getParameter("id"));
         request.setAttribute("user", userService.findById(id));
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/edit.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/view/edit.jsp");
         try {
             requestDispatcher.forward(request, response);
         } catch (ServletException e) {
@@ -63,7 +63,7 @@ public class UserServlet extends HttpServlet {
     }
 
     private void showFormCreate(HttpServletRequest request, HttpServletResponse response) {
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/create.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/view/create.jsp");
         try {
             requestDispatcher.forward(request, response);
         } catch (ServletException e) {
@@ -76,7 +76,7 @@ public class UserServlet extends HttpServlet {
     private void showList(HttpServletRequest request, HttpServletResponse response) {
         List<User> userList = userService.getList();
         request.setAttribute("userList", userList);
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/list.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/view/list.jsp");
         try {
             requestDispatcher.forward(request, response);
         } catch (ServletException e) {
